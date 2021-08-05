@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tell_me/screens/home_screen.dart';
+import 'package:tell_me/screens/image_screen.dart';
 import 'package:tell_me/services/news_api.dart';
 
 void main() {

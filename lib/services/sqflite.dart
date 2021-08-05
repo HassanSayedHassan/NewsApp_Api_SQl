@@ -61,4 +61,11 @@ class MySql {
       print ("Deleted");
     });
   }
+
+  Future<void> deleteAll() async {
+    var dbclient = await db;
+    return await dbclient.delete(table).whenComplete(() {
+      print ("Deleted");
+    });
+  }
 }

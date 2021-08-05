@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tell_me/helpers/photo_utility.dart';
 import 'package:tell_me/models/news.dart';
 import 'package:tell_me/screens/details_screen.dart';
 import 'package:tell_me/screens/filter_screen.dart';
@@ -30,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Future<void> didChangeDependencies() async {
     // TODO: implement didChangeDependencies
+  //  NewsApi().fetChNews();
     NewsModel newsModels=NewsModel(
       url: '2112',
       title: "21",
@@ -46,14 +49,15 @@ class _HomeScreenState extends State<HomeScreen> {
       publishedAt: "#12",
       sourceName: "#12",
     );
-  await MySql().update(newss,newsModels);
-    MySql().getData().then((value) {
+/*  await MySql().update(newss,newsModels);
+*/
+/*    MySql().getData().then((value) {
       print(value.length);
-     value.forEach((element) {
-       print("nammmmm ${element.sourceName}");
-     });
-    });
- //   MySql().delete(12);
+      value.forEach((element) {
+        print("nammmmm ${element.sourceName}");
+      });
+    });*/
+ //  MySql().delete(12);
     super.didChangeDependencies();
   }
 
@@ -85,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Container(
-            height: 180,
+            height: 140,
             child: GridView.builder(
               itemCount: 3,
               itemBuilder: (BuildContext context, int index) {
@@ -95,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
               scrollDirection: Axis.horizontal,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 1,
-                  childAspectRatio: 1.2,
+                  childAspectRatio: 1.1,
                   crossAxisSpacing: 0,
                   mainAxisSpacing: 10),
             ),
@@ -121,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           FutureBuilder(
-            future: NewsApi().fetChNews(),
+            future: MySql().getData(),
             builder: (context, AsyncSnapshot snapShot) {
               switch (snapShot.connectionState) {
                 case ConnectionState.none:
@@ -148,9 +152,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         scrollDirection: Axis.vertical,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 1,
-                            childAspectRatio: 1.3,
+                            childAspectRatio: 2.8,
                             crossAxisSpacing: 0,
-                            mainAxisSpacing: 0),
+                            mainAxisSpacing: 1),
                       ),
                     );
                   }
@@ -165,27 +169,31 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget drowHeder() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          Icon(
-            Icons.search,
-            color: Color(0xff989595),
-            size: 35,
-          ),
-          Expanded(
-            child: Text(
+    return Container(
+      width: double.infinity,
+      color: Colors.teal,
+      child: Card(
+        elevation: 10,
+        color: Colors.teal,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+/*          Icon(
+              Icons.search,
+              color: Color(0xff989595),
+              size: 35,
+            ),*/
+            Text(
               'News App',
               textAlign: TextAlign.center,
               style: GoogleFonts.abrilFatface(
-                textStyle: TextStyle(color: Colors.black87, letterSpacing: 0.5),
+                textStyle: TextStyle(color: Colors.white, letterSpacing: 0.5),
                 fontSize: 28,
                 fontStyle: FontStyle.normal,
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -202,7 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         children: [
           Container(
-            height: 160,
+            height: 120,
             width: 130,
             decoration: BoxDecoration(
               shape: BoxShape.rectangle,
@@ -227,57 +235,69 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (context) => DetailsScreen(news),
             ));
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Container(
-            height: 180,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.circular(20),
-              image: DecorationImage(
-                fit: BoxFit.fill,
-                image: news.urlToImage != null
-                    ? NetworkImage(news.urlToImage)
-                    : AssetImage("assets/images/bbc.png"),
-              ),
-            ),
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      child: Card(
+       margin: EdgeInsets.all(4),
+
+      //  color: Colors.pink,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+          ///  mainAxisSize: MainAxisSize.max,
             children: [
-              Text(
-                parseHumanDateTime(news.publishedAt),
-                textAlign: TextAlign.start,
-                style: GoogleFonts.roboto(
-                  textStyle:
-                      TextStyle(color: Colors.black87, letterSpacing: 0.5),
-                  fontSize: 14,
-                  fontStyle: FontStyle.italic,
+              Container(
+                height: 110,
+                width: 110,
+                decoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.circular(20),
+                  image: DecorationImage(
+                    fit: BoxFit.fill,
+                    image: news.urlToImage != null
+                        ? MemoryImage(Utility().ConvertStringToImage(news.urlToImage))
+                        : AssetImage("assets/images/bbc.png"),
+                  ),
                 ),
               ),
-              SizedBox(
-                width: 15,
-              ),
-              Flexible(
-                child: Text(
-                  news.title.length > 80
-                      ? news.title.substring(0, 80)
-                      : news.title,
-                  textAlign: TextAlign.end,
-                  style: GoogleFonts.abrilFatface(
-                    textStyle:
-                        TextStyle(color: Colors.black87, letterSpacing: 0.5),
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    fontStyle: FontStyle.normal,
+              SizedBox(width: 15,),
+              Expanded(
+                child: Container(
+              //    color: Colors.amber,
+                  child: Column(
+                    children: [
+                      Text(
+                        news.title.length >60
+                            ? news.title.substring(0, 60)
+                            : news.title,
+                        textAlign: TextAlign.end,
+                        style: GoogleFonts.abrilFatface(
+                          textStyle:
+                              TextStyle(color: Colors.black87, letterSpacing: 0.5),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.normal,
+                        ),
+                      ),
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.bottomLeft,
+                          child: Text(
+                            parseHumanDateTime(news.publishedAt),
+                            style: GoogleFonts.roboto(
+                              textStyle:
+                              TextStyle(color: Colors.black87, letterSpacing: 0.5),
+                              fontSize: 12,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }

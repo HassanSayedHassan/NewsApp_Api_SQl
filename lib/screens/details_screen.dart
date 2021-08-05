@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tell_me/helpers/help_fun.dart';
+import 'package:tell_me/helpers/photo_utility.dart';
 import 'package:tell_me/models/news.dart';
 import 'package:tell_me/widgets/api_handlar.dart';
 
@@ -22,7 +23,7 @@ class DetailsScreen extends StatelessWidget {
               image: DecorationImage(
                 fit: BoxFit.fill,
                 image: news.urlToImage != null
-                    ? NetworkImage(news.urlToImage)
+                    ? MemoryImage(Utility().ConvertStringToImage(news.urlToImage))
                     : AssetImage("assets/images/bbc.png"),
               ),
             ),
@@ -87,7 +88,12 @@ class DetailsScreen extends StatelessWidget {
               ],
             ),
           ),
-          drowbtn(context)
+
+          Expanded(
+            child: Align(
+                alignment: Alignment.bottomCenter,
+                child: drowbtn(context)),
+          )
         ],
       ),
     ));
@@ -101,7 +107,7 @@ class DetailsScreen extends StatelessWidget {
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 60, vertical: 40),
         decoration: BoxDecoration(
-            color: Color(0xffF800EF), borderRadius: BorderRadius.circular(40)),
+            color: Colors.teal, borderRadius: BorderRadius.circular(40)),
         width: double.infinity,
         height: 50,
         alignment: Alignment.center,
